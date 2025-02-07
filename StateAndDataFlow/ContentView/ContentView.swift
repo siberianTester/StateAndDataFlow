@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject private var contentViewVM: ContentViewViewModel
+    @Environment(ContentViewViewModel.self) var contentViewVM
     @EnvironmentObject private var loginViewVM: LoginViewViewModel
     
     var body: some View {
@@ -20,12 +20,14 @@ struct ContentView: View {
             Text(contentViewVM.counter.formatted())
                 .font(.largeTitle)
                 .padding(.top, 100)
-                
-            Spacer()
-            
-            ButtonView(contentViewVM: contentViewVM)
             
             Spacer()
+            
+            ButtonView()
+            
+            Spacer()
+            
+            LogoutView()
         }
         .padding()
     }
@@ -33,12 +35,12 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .environmentObject(ContentViewViewModel())
+        .environment(ContentViewViewModel())
         .environmentObject(LoginViewViewModel())
 }
 
 struct ButtonView: View {
-    @ObservedObject var contentViewVM: ContentViewViewModel
+    @Environment(ContentViewViewModel.self) var contentViewVM
     
     var body: some View {
         Button(action: contentViewVM.startTimer) {
@@ -54,5 +56,31 @@ struct ButtonView: View {
             RoundedRectangle(cornerRadius: 20)
                 .stroke(.black, lineWidth: 4)
         )
+    }
+}
+
+struct LogoutView: View {
+    @EnvironmentObject private var loginViewVM: LoginViewViewModel
+    
+    var body: some View {
+        Button(action: logout) {
+            Text("LogOut")
+                .font(.title)
+                .fontWeight(.bold)
+                .foregroundStyle(.white)
+            
+        }
+        .frame(width: 200, height: 60)
+        .background(.tint)
+        .clipShape(.rect(cornerRadius: 20))
+        .overlay (
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(.black, lineWidth: 4)
+        )
+        .padding(.bottom, 50)
+    }
+    
+    private func logout() {
+        loginViewVM.logout()
     }
 }
